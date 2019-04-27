@@ -2,7 +2,12 @@
 {% block content %}
     {% for lock in lockers %}
         {% csrf_token %}
-        <p>{{ lock }}</p>
+        <div class="card w-50">
+        <div class="card-body">
+            <h5 class="card-title">{{ lock }}</h5>
+        </div>
+        </div>
+        {% comment %} <p>{{ lock }}</p> {% endcomment %}
     {% endfor %}
         <form method = "POST">
             {% csrf_token %}
