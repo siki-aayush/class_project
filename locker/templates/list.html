@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for lock in lockers %}
+        {% csrf_token %}
+        <p>{{ lock }}</p>
+    {% endfor %}
+        <form method = "POST">
+            {% csrf_token %}
+            <h1>name: </h1> {{ locker_form.name }} 
+            <h1>key: </h1> {{ locker_form.key }}
+            <p><button type="submit" class="btn-primary">submit</button></p> 
+        </form>
+{% endblock content %}
