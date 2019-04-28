@@ -9,8 +9,6 @@ from django.shortcuts import reverse, redirect
 from django.http import HttpResponseRedirect
 # Create your views here.
 
-
-
 class LoginUser(View):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
