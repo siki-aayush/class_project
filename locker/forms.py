@@ -1,7 +1,7 @@
-from .models import Lockers
+from .models import Locker
 from django import forms
 
 class LockerForm(forms.ModelForm):
     class Meta:
-        model = Lockers
+        model = Locker
         fields = ('name', 'key', 'status')

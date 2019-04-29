@@ -3,7 +3,7 @@ from django.views import View
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse
 from django.views.generic import CreateView, ListView
-from .models import Lockers
+from .models import Locker
 from .forms import LockerForm
 from django.shortcuts import reverse, redirect
 from django.http import HttpResponseRedirect
@@ -37,8 +37,11 @@ def logoutuser(request):
 
 
 class CreateLocker(CreateView):
+    def get(self, request):
+        if not request.user.is_authenticated:
+            LoginUser()
     template_name= 'locker.html'
-    model = Lockers
+    model = Locker
     form_class = LockerForm
     success_url = '../list'
     def form_valid(self, form):
@@ -53,20 +56,17 @@ class CreateLocker(CreateView):
 
 
 def view_locker(request):
-    # import ipdb;ipdb.set_trace()
-    lockers = Lockers.objects.all()
-    # lockers = Lockers.objects.all().filter(user=request.user)
+    lockers = Locker.objects.all()
     locker_form = LockerForm
     if request.method == 'GET':
-        # import ipdb;ipdb.set_trace()
+        if not request.user.is_authenticated:
+            return redirect("login_page")
         return render(request, 'list.html', {
             'lockers' : lockers,
             'locker_form': locker_form,
         })
     
     if request.method == 'POST':
-        # import ipdb;ipdb.set_trace()
-        for i in lockers:
-            if i.name == request.POST['name'] and i.key == request.POST['key']:
-                return HttpResponse("the name and the key successfully matched")
-        return HttpResponse("hello")
+        if Locker.objects.filter(name = request.POST['name'], key = request.POST['key']):
+            return HttpResponse("the name and the key successfully matched")
+        return HttpResponse("not matched")
