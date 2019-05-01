@@ -70,8 +70,12 @@ def view_locker(request):
         return HttpResponse("not matched")
 
 
-
 class DeleteLocker(View):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect("login_page")
+        return super().dispatch(*args, **kwargs)
+
     def get(self, request):
          return render(request, 'delete.html',{
              'lockers' : Locker.objects.filter(user_id = request.user.pk),
