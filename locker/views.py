@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views import View
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, DeleteView
 from .models import Locker
 from .forms import LockerForm
 from django.shortcuts import reverse, redirect
@@ -39,8 +39,8 @@ def logoutuser(request):
 class CreateLocker(CreateView):
     def get(self, request):
         if not request.user.is_authenticated:
-            LoginUser()
-    template_name= 'locker.html'
+            return redirect("login_page")
+        return render(request, 'locker.html')
     model = Locker
     form_class = LockerForm
     success_url = '../list'
@@ -49,10 +49,6 @@ class CreateLocker(CreateView):
         obj.user = self.request.user
         obj.save()
         return HttpResponseRedirect(self.success_url)
-
-        #return HttpResponseRedirect(self.get_success_url())
-        # form.instance.user = self.request.user
-        # return super().form_valid(form)
 
 
 def view_locker(request):
@@ -70,3 +66,25 @@ def view_locker(request):
         if Locker.objects.filter(name = request.POST['name'], key = request.POST['key']):
             return HttpResponse("the name and the key successfully matched")
         return HttpResponse("not matched")
+
+
+# class DeleteLocker(DeleteView):
+#     # import ipdb;ipdb.set_trace()
+#     model = Locker
+#     template_name = 'delete.html'
+#     success_url = '../list'
+#     def delete(self, request):
+#         Locker.objects.filter(name = request.POST['name'], key = request.POST['key']).delete()
+#         return HttpResponseRedirect(success_url)
+
+def delete_locker(request):
+    lockers = Locker.objects.filter(user_id = request.user.pk)
+    if request.method == 'GET':
+        return render(request, 'delete.html',{
+            'lockers' : lockers,
+            'locker_form' : LockerForm,
+        })
+    
+    if request.method == 'POST':
+        Locker.objects.filter(name = request.POST['name'], key = request.POST['key']).delete()
+        return HttpResponse("successfully deleted")
