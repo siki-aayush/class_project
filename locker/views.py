@@ -37,10 +37,10 @@ def logoutuser(request):
 
 
 class CreateLocker(CreateView):
-    def get(self, request):
-        if not request.user.is_authenticated:
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_authenticated:
             return redirect("login_page")
-        return render(request, 'locker.html')
+        return render(self.request, 'locker.html')
     model = Locker
     form_class = LockerForm
     success_url = '../list'
@@ -86,5 +86,8 @@ def delete_locker(request):
         })
     
     if request.method == 'POST':
-        Locker.objects.filter(name = request.POST['name'], key = request.POST['key']).delete()
-        return HttpResponse("successfully deleted")
+        import ipdb;ipdb.set_trace()
+        if Locker.objects.filter(name = request.POST['name'], key = request.POST['key'], user_id = request.user.pk):
+            Locker.objects.filter(name = request.POST['name'], key = request.POST['key']).delete()
+            return HttpResponse("successfully deleted")
+        return HttpResponse("no locker found")
