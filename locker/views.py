@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views import View
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse
-from django.views.generic import CreateView, ListView, DeleteView
+from django.views.generic import View, CreateView, ListView, DeleteView
 from .models import Locker
 from .forms import LockerForm
 from django.shortcuts import reverse, redirect
@@ -37,13 +37,15 @@ def logoutuser(request):
 
 
 class CreateLocker(CreateView):
+    model = Locker
+    template_name = 'locker.html'
+    form_class = LockerForm
+    success_url = '../list'
     def dispatch(self, *args, **kwargs):
         if not self.request.user.is_authenticated:
             return redirect("login_page")
-        return render(self.request, 'locker.html')
-    model = Locker
-    form_class = LockerForm
-    success_url = '../list'
+        return super().dispatch(*args, **kwargs)
+    
     def form_valid(self, form):
         obj=form.save(commit=False)
         obj.user = self.request.user
@@ -63,31 +65,21 @@ def view_locker(request):
         })
     
     if request.method == 'POST':
-        if Locker.objects.filter(name = request.POST['name'], key = request.POST['key']):
+        if Locker.objects.filter(name = request.POST['name'], key = request.POST['key']).exists():
             return HttpResponse("the name and the key successfully matched")
         return HttpResponse("not matched")
 
 
-# class DeleteLocker(DeleteView):
-#     # import ipdb;ipdb.set_trace()
-#     model = Locker
-#     template_name = 'delete.html'
-#     success_url = '../list'
-#     def delete(self, request):
-#         Locker.objects.filter(name = request.POST['name'], key = request.POST['key']).delete()
-#         return HttpResponseRedirect(success_url)
 
-def delete_locker(request):
-    lockers = Locker.objects.filter(user_id = request.user.pk)
-    if request.method == 'GET':
-        return render(request, 'delete.html',{
-            'lockers' : lockers,
-            'locker_form' : LockerForm,
-        })
+class DeleteLocker(View):
+    def get(self, request):
+         return render(request, 'delete.html',{
+             'lockers' : Locker.objects.filter(user_id = request.user.pk),
+             'locker_form' : LockerForm,
+         })
     
-    if request.method == 'POST':
-        import ipdb;ipdb.set_trace()
-        if Locker.objects.filter(name = request.POST['name'], key = request.POST['key'], user_id = request.user.pk):
-            Locker.objects.filter(name = request.POST['name'], key = request.POST['key']).delete()
-            return HttpResponse("successfully deleted")
+    def post(self, request):
+        if Locker.objects.filter(name = request.POST['name'], key = request.POST['key'], user_id = request.user.pk).exists():
+             Locker.objects.filter(name = request.POST['name'], key = request.POST['key']).delete()
+             return HttpResponse("successfully deleted")
         return HttpResponse("no locker found")
