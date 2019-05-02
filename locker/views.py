@@ -100,13 +100,9 @@ class DeleteLocker(DeleteView):
         return render(request, 'delete.html',{
             'lockers' : Locker.objects.filter(user_id = request.user.pk),
             'locker_form' : LockerForm,
-        }) 
+        })   
     
-    def delete(self, request, *args, **kwargs):
-        if Locker.objects.filter(name = request.POST['name'], key = request.POST['key'], user_id = request.user.pk).exists():
-            self.object = Locker.objects.get(name = request.POST['name'], key = request.POST['key'], user_id = request.user.pk)
-            # return super.delete(request, *args, **kwargs)
-            success_url = self.get_success_url()
-            self.object.delete()
-            return HttpResponseRedirect(success_url)
+    def get_object(self, queryset = None):
+        if Locker.objects.filter(name = self.request.POST['name'], key = self.request.POST['key'], user_id = self.request.user.pk).exists():
+            return Locker.objects.get(name = self.request.POST['name'], key = self.request.POST['key'], user_id = self.request.user.pk)
         return HttpResponse("no lockers found")
