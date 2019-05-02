@@ -68,26 +68,7 @@ def view_locker(request):
         if Locker.objects.filter(name = request.POST['name'], key = request.POST['key']).exists():
             return HttpResponse("the name and the key successfully matched")
         return HttpResponse("not matched")
-
-
-# # class DeleteLocker(View):
-#     def dispatch(self, request, *args, **kwargs):
-#         if not request.user.is_authenticated:
-#             return redirect("login_page")
-#         return super().dispatch(*args, **kwargs)
-
-#     def get(self, request):
-#          return render(request, 'delete.html',{
-#              'lockers' : Locker.objects.filter(user_id = request.user.pk),
-#              'locker_form' : LockerForm,
-#          })
-# 
-#     def post(self, request):
-#         if Locker.objects.filter(name = request.POST['name'], key = request.POST['key'], user_id = request.user.pk).exists():
-#              Locker.objects.filter(name = request.POST['name'], key = request.POST['key']).delete()
-#              return HttpResponse("successfully deleted")
-#         return HttpResponse("no locker found")
-
+        
 class DeleteLocker(DeleteView):
     model = Locker
     success_url = '/list'

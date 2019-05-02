@@ -1,18 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
-    {% for lock in lockers %}
-        {% csrf_token %}
-        <div class="card w-50">
-        <div class="card-body">
-            <h5 class="card-title">{{ lock }}</h5>
-        </div>
-        </div>
-        {% comment %} <p>{{ lock }}</p> {% endcomment %}
-    {% endfor %}
-        <form method = "POST">
-            {% csrf_token %}
-            <h1>Locker name: </h1> {{ locker_form.name }} 
-            <h1>Locker key: </h1> {{ locker_form.key }}
-            <p><button type="submit" class="btn-primary">submit</button></p> 
-        </form>
+        {% for lock in lockers %}
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-light">{{ lock }}</li>
+              </ul>
+        {% endfor %}
+            <form method = "POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label >Locker</label>
+                    <input type="text" class="form-control" placeholder="Name" name="name">
+                </div>
+                <div class="form-group">
+                    <label >Key</label>
+                    <input type="password" class="form-control" placeholder="Password" name="key">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form> 
+
 {% endblock content %}
