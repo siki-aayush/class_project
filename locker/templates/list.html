@@ -1,21 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
-        {% for lock in lockers %}
-            <ul class="list-group">
-                <li class="list-group-item list-group-item-light">{{ lock }}</li>
-              </ul>
-        {% endfor %}
-            <form method = "POST">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label >Locker</label>
-                    <input type="text" class="form-control" placeholder="Name" name="name">
-                </div>
-                <div class="form-group">
-                    <label >Key</label>
-                    <input type="password" class="form-control" placeholder="Password" name="key">
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form> 
-
+    <label>Lokers</label>
+    {% for lock in lockers %}
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-light">{{ lock }}</li>
+            </ul>
+    {% endfor %}
+    <br>
+    <br>
+    <label>Enter your locker</label>
+    <form method = "POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label >Locker </label>
+            <input type="text" class="form-control" placeholder="Name" name="name">
+        </div>
+        <div class="form-group">
+            <label >Key</label>
+            <input type="password" class="form-control" placeholder="Password" name="key">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form> 
 {% endblock content %}
