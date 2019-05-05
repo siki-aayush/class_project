@@ -6,13 +6,13 @@ from django.views.generic import View, CreateView, ListView, DeleteView
 from .models import Locker
 from .forms import LockerForm
 from django.shortcuts import reverse, redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 # Create your views here.
 
 class LoginUser(View):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return HttpResponse("user is already logged in")
+            return render(request, "list.html")
         return render(request, "login.html")
         # return HttpResponse("hello")
     
@@ -84,6 +84,8 @@ class DeleteLocker(DeleteView):
         })   
     
     def get_object(self, queryset = None):
-        if Locker.objects.filter(name = self.request.POST['name'], key = self.request.POST['key'], user_id = self.request.user.pk).exists():
-            return Locker.objects.get(name = self.request.POST['name'], key = self.request.POST['key'], user_id = self.request.user.pk)
-        return HttpResponse("no lockers found")
+        try:
+            obj = Locker.objects.get(name = self.request.POST['name'], key = self.request.POST['key'], user_id = self.request.user.pk)
+        except Locker.DoesNotExist:
+            raise Http404
+        return obj
