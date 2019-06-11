@@ -6,7 +6,10 @@ from django.views.generic import View, CreateView, ListView, DeleteView
 from .models import Locker
 from .forms import LockerForm
 from django.shortcuts import reverse, redirect
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, JsonResponse
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializers import LockerSerializer
 # Create your views here.
 
 class LoginUser(View):
@@ -84,8 +87,32 @@ class DeleteLocker(DeleteView):
         })   
     
     def get_object(self, queryset = None):
+        import ipdb; ipdb.set_trace()
         try:
             obj = Locker.objects.get(name = self.request.POST['name'], key = self.request.POST['key'], user_id = self.request.user.pk)
         except Locker.DoesNotExist:
             raise Http404
         return obj
+
+
+def get_data(self):
+    data = {
+        "locker": "check",
+        "password": "check"
+    }
+    return JsonResponse(data)
+
+class LockerView(APIView):
+    def get(self, request):
+        lockers = Locker.objects.all()
+        serializer = LockerSerializer(lockers, many=True)
+        return Response({"lockers": serializer.data})
+
+    def post(self, request):
+        locker = request.data.get('lockers')
+
+        serializer = LockerSerializer(data = locker)
+        if serializer.is_valid(raise_exception = True):
+            locker_saved = serializer.save()
+        return Response({"success":"lockers {} created successfully".format(locker_saved.name)})
+

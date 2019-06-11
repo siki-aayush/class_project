@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'locker.apps.LockerConfig',
     'bootstrap4',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -120,3 +121,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 LOGIN_URL = ''
 LOGIN_REDIRECT_URL = '/create' 
+STATIC_ROOT = os.path.join(BASE_DIR,'static')
