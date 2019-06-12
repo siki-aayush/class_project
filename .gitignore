@@ -202,5 +202,6 @@ dmypy.json
 [Ss]cripts
 pyvenv.cfg
 pip-selfcheck.json
+.DS_Store
 
 # End of https://www.gitignore.io/api/django,python,virtualenv
