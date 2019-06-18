@@ -1,20 +1,25 @@
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.views.generic import View, CreateView, ListView, DeleteView
 from .models import Locker
 from .forms import LockerForm
 from django.shortcuts import reverse, redirect
 from django.http import HttpResponseRedirect, Http404
+from rest_framework import viewsets
+from .serializers import UserSerializer
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 # Create your views here.
+
 
 class LoginUser(View):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return render(request, "list.html")
         return render(request, "login.html")
-        # return HttpResponse("hello")
     
 
     def post(self, request, *args, **kwargs):
@@ -36,15 +41,17 @@ def logoutuser(request):
     return HttpResponse("log out successfully")
 
 
+@method_decorator(login_required, name='dispatch')
 class CreateLocker(CreateView):
     model = Locker
     template_name = 'locker.html'
     form_class = LockerForm
     success_url = '../list'
-    def dispatch(self, *args, **kwargs):
-        if not self.request.user.is_authenticated:
-            return redirect("login_page")
-        return super().dispatch(*args, **kwargs)
+    # def dispatch(self, *args, **kwargs):
+    #     import ipdb ; ipdb.set_trace()
+    #     if not self.request.user.is_authenticated:
+    #         return redirect("login_page")
+    #     return super().dispatch(*args, **kwargs)
     
     def form_valid(self, form):
         obj=form.save(commit=False)
@@ -52,13 +59,13 @@ class CreateLocker(CreateView):
         obj.save()
         return HttpResponseRedirect(self.success_url)
 
-
+@login_required
 def view_locker(request):
     lockers = Locker.objects.all()
     locker_form = LockerForm
     if request.method == 'GET':
-        if not request.user.is_authenticated:
-            return redirect("login_page")
+        # if not request.user.is_authenticated:
+            # return redirect("login_page")
         return render(request, 'list.html', {
             'lockers' : lockers,
             'locker_form': locker_form,
@@ -89,3 +96,9 @@ class DeleteLocker(DeleteView):
         except Locker.DoesNotExist:
             raise Http404
         return obj
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
