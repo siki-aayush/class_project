@@ -23,7 +23,7 @@ SECRET_KEY = '@sk4+2n!22rep%tsh#$&%xr&j@g1=u$9rvmaf8*4o(36&v3#i-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [git.heroku.com/class-project-test.git]
 
 
 # Application definition
@@ -126,3 +126,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/create' 
+STATIC_ROOT = os.path.join(BASE_DIR), 'static')
