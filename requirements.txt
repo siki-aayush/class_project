@@ -1,3 +1,5 @@
 Django==2.1.5
 djangorestframework==3.9.4
 django-heroku
+django-bootstrap4
+
