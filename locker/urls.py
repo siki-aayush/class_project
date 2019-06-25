@@ -6,6 +6,7 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 
+
 urlpatterns = [
     path('', LoginUser.as_view(), name="login_page"),
     path('logout/', logoutuser, name="logout_page"),
