@@ -6,8 +6,8 @@ https://docs.djangoproject.com/en/2.1/howto/deployment/wsgi/
 """
 
 import os
+from django.core.wsgi import get_wsgi_application
 
-from django.core.wsgi import get_wsgi_applications
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bank.settings')
 
 application = get_wsgi_application()

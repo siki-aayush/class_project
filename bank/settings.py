@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-from django.core.wsgi import get_wsgi_application
+import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,7 +24,7 @@ SECRET_KEY = '@sk4+2n!22rep%tsh#$&%xr&j@g1=u$9rvmaf8*4o(36&v3#i-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['git.heroku.com/class-project-test.git']
+ALLOWED_HOSTS = ['class-project-test.herokuapp.com']
 
 
 # Application definition
@@ -43,7 +43,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -129,4 +128,4 @@ STATIC_URL = '/static/'
 LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/create' 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+django_heroku.settings(locals())
