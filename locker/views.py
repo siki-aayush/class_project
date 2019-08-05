@@ -46,26 +46,19 @@ class CreateLocker(CreateView):
     model = Locker
     template_name = 'locker.html'
     form_class = LockerForm
-    success_url = '../list'
+    success_url = '/list'
     # def dispatch(self, *args, **kwargs):
     #     import ipdb ; ipdb.set_trace()
     #     if not self.request.user.is_authenticated:
     #         return redirect("login_page")
     #     return super().dispatch(*args, **kwargs)
-    
-    def form_valid(self, form):
-        obj=form.save(commit=False)
-        obj.user = self.request.user
-        obj.save()
-        return HttpResponseRedirect(self.success_url)
 
 @login_required
 def view_locker(request):
     lockers = Locker.objects.all()
     locker_form = LockerForm
     if request.method == 'GET':
-        # if not request.user.is_authenticated:
-            # return redirect("login_page")
+        import ipdb ; ipdb.set_trace()
         return render(request, 'list.html', {
             'lockers' : lockers,
             'locker_form': locker_form,
