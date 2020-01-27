@@ -58,7 +58,6 @@ def view_locker(request):
     lockers = Locker.objects.all()
     locker_form = LockerForm
     if request.method == 'GET':
-        import ipdb ; ipdb.set_trace()
         return render(request, 'list.html', {
             'lockers' : lockers,
             'locker_form': locker_form,
